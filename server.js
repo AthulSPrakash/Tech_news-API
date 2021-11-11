@@ -4,6 +4,7 @@ const cheerio = require('cheerio')
 const app = express()
 
 const port = process.env.PORT || 5000
+
 const sources = {
     "techcrunch": "https://techcrunch.com/",
     "gizmodo": "https://gizmodo.com/",
@@ -20,6 +21,18 @@ const sources = {
 }
 
 const allNews = []
+const techCrunch = []
+const gizmodo = []
+const verge = []
+const ventureBeat = []
+const wired = []
+const digitalTrends = []
+const engadget = []
+const gadgetReview = []
+const techrRadar = []
+const nineto5Mac = []
+const androidAuthority = []
+const gsmarena = []
 
 app.use(express.static(__dirname));
 
@@ -27,9 +40,21 @@ app.get("/", (req,res)=>{
     res.sendFile(__dirname + "/index.html");
 })
 
-app.get("/:news", (req,res)=>{
-    const allSource = req.params.news
-    if(allSource=='news'){
+app.get("/:allnews", (req,res)=>{
+    const allSource = req.params.allnews
+    if(allSource=='allnews'){
+        connectTCrunch()
+        connectGizmodo()    
+        connectVerge()         
+        connectVBeats()  
+        connectWired()  
+        connectDTrends()     
+        connectEngadget()       
+        connectGReview()      
+        connectTRadar()    
+        connect9to5Mac()     
+        connectAA()      
+        connectGSMA()   
         res.json(allNews)
     }
     else{
@@ -38,279 +63,318 @@ app.get("/:news", (req,res)=>{
 })
 
 app.get("/:news/:sourceId", async (req,res)=>{
+
     const parentId = req.params.news
     const sourceId = req.params.sourceId
-    //GSMArena
+
     if(sourceId=='gsmarena' && parentId=='news'){
-        const sourceUrl = sources.gsmarena
-        axios(sourceUrl)
-        .then(response=>{
-            const specificNews = []
-            const html = response.data
-            const $ = cheerio.load(html)
-            $('.news-item',html).each(function(){
-                const titles = $(this).find('a').find('h3').text()
-                const para = $(this).find('a').find('p').text()
-                const img = $(this).find('a').find('.news-item-media-wrap').find('img').attr('src')
-                let link = $(this).find('a').attr('href')
-                link = sourceUrl + link
-                const dateTime = $(this).find('.meta-line').find('.meta-item-time').text()
-                specificNews.push({titles,para,img,dateTime,link})
-            })
-            res.json(specificNews)
-        })
-        .catch(err=>console.log(err))
+        connectGSMA()
+        res.json(gsmarena)
     }
-    //AndroidAuthority
     else if(sourceId=='androidauthority' && parentId=='news'){
-        const sourceUrl = sources.androidauthority + 'news'
-        axios(sourceUrl)
-        .then(response=>{
-            const specificNews = []
-            const html = response.data
-            const $ = cheerio.load(html)
-            $('a',html).each(function(){
-                let titles = $(this).find('.title-wrapper').text()
-                titles += $(this).find('.title').text()
-                if(titles=='') return
-                const img = $(this).find('img').attr('src')
-                let link = $(this).attr('href')
-                link = sourceUrl + link
-                specificNews.push({titles,img,link})
-            })
-            res.json(specificNews)
-        })
-        .catch(err=>console.log(err))
+        connectAA()
+        res.json(androidAuthority)
     }
-    //The Verge
     else if(sourceId=='verge' && parentId=='news'){
-        const sourceUrl = sources.verge + 'tech'
-        axios(sourceUrl)
-        .then(response=>{
-            const specificNews = []
-            const html = response.data
-            const $ = cheerio.load(html)
-            $('.c-entry-box--compact--article',html).each(function(){
-                const titles = $(this).find('.c-entry-box--compact__title').text()
-                let img = $(this).find('noscript').text()
-                img = img.replace(/^<img\salt=\"\"\ssrc=\"/, "")
-                img = img.replace(/\">$/,"")
-                const link = $(this).find('.c-entry-box--compact__title').find('a').attr('href')
-                const dateTime = $(this).find('time').text().trim()
-                specificNews.push({titles,img,dateTime,link})
-            })
-            res.json(specificNews)
-        })
-        .catch(err=>console.log(err))
+        connectVerge()
+        res.json(verge)
     }
-    //Gizmodo
     else if(sourceId=='gizmodo' && parentId=='news'){
-        const sourceUrl = sources.gizmodo + 'tech/news'
-        axios(sourceUrl)
-        .then(response=>{
-            const specificNews = []
-            const html = response.data
-            const $ = cheerio.load(html)
-            $('article',html).each(function(){
-                const titles = $(this).find('h2').text()
-                const img = $(this).find('figure').find('a').find('img').attr('src')
-                const link = $(this).find('figure').find('a').attr('href')
-                const dateTime = $(this).find('time').find('a').text()
-                specificNews.push({titles,img,dateTime,link})
-            })
-            res.json(specificNews)
-        })
-        .catch(err=>console.log(err))
+        connectGizmodo()
+        res.json(gizmodo)
     }
-    //techradar
     else if(sourceId=='techradar' && parentId=='news'){
-        const sourceUrl = sources.techradar + 'in/news'
-        axios(sourceUrl)
-        .then(response=>{
-            const specificNews = []
-            const html = response.data
-            const $ = cheerio.load(html)
-            $('.small',html).each(function(){
-                const titles = $(this).find('a').find('article').find('.content').find('h3').text().trim()
-                if(titles=='') return
-                // const para = $(this).
-                const img = $(this).find('a').find('article').find('.image').find('img').attr('data-original-mos')
-                const link = $(this).find('a').attr('href')
-                const dateTime = $(this).find('a').find('article').find('.content').find('p').find('time').text()
-                specificNews.push({titles,img,dateTime,link})
-            })
-            res.json(specificNews)
-        })
-        .catch(err=>console.log(err))
+        connectTRadar()
+        res.json(techrRadar)
     }
-    //engadget
     else if(sourceId=='engadget' && parentId=='news'){
-        const sourceUrl = sources.engadget
-        axios(sourceUrl)
-        .then(response=>{
-            const specificNews = []
-            const html = response.data
-            const $ = cheerio.load(html)
-            $('li',html).each(function(){
-                const titles = $(this).find('article').find('h2').text()
-                if(titles=='') return
-                // const para = $(this).
-                const img = $(this).find('article').find('a').find('img').attr('src')
-                let link = $(this).find('article').find('a').attr('href')
-                link = link.replace(/^[/]/,"")
-                link = sourceUrl + link
-                let dateTime = $(this).find('article').find('a').find('div').find('span:nth-child(2)').text()
-                dateTime = dateTime.replace(/^,\s/,"")
-                specificNews.push({titles,img,dateTime,link})
-            })
-            res.json(specificNews)
-        })
-        .catch(err=>console.log(err))
+        connectEngadget()
+        res.json(engadget)
     }
-    //9to5Mac
     else if(sourceId=='nineto5mac' && parentId=='news'){
-        const sourceUrl = sources.nineto5mac
-        axios(sourceUrl)
-        .then(response=>{
-            const specificNews = []
-            const html = response.data
-            const $ = cheerio.load(html)
-            $('article',html).each(function(){
-                const titles = $(this).find('.post-title').text()
-                if(titles=='') return
-                const img = $(this).find('a').find('img').attr('src')
-                const link = $(this).find('a').attr('href')
-                let dateTime = $(this).find('.post-meta').find('.time-twitter').text()
-                dateTime = dateTime.replace(/^\n\t+-\s/,"")
-                dateTime = dateTime.replace(/\n\t+$/,"")
-                specificNews.push({titles,img,dateTime,link})
-            })
-            res.json(specificNews)
-        })
-        .catch(err=>console.log(err))
+        connect9to5Mac()
+        res.json(nineto5Mac)
     }
-    //GadgetReview
     else if(sourceId=='gadgetreview' && parentId=='news'){
-        const sourceUrl = sources.gadgetreview + 'tech-deals'
-        axios(sourceUrl)
-        .then(response=>{
-            const specificNews = []
-            const html = response.data
-            const $ = cheerio.load(html)
-            $('.u-col',html).each(function(){
-                let titles = $(this).find('h3').text()
-                titles = titles.replace(/^\n\t+\n\t+/,"")
-                titles = titles.replace(/\t+\n\t+$/,"")
-                let img = $(this).find('a').attr('style')
-                if(img==undefined) return
-                img = img.replace(/^background-image:url[(]'/,"")
-                img = img.replace(/'[)];$/,"")
-                const link = $(this).find('a').attr('href')
-                specificNews.push({titles,img,link})
-            })
-            res.json(specificNews)
-        })
-        .catch(err=>console.log(err))
+        connectGReview()
+        res.json(gadgetReview)
     }
-    //digitaltrends
     else if(sourceId=='digitaltrends' && parentId=='news'){
-        const sourceUrl = sources.digitaltrends
-        axios(sourceUrl)
-        .then(response=>{
-            const specificNews = []
-            const html = response.data
-            const $ = cheerio.load(html)
-            $('.b-synopsis-stack',html).each(function(){
-                let titles = $(this).find('.b-synopsis-stack__title').text()
-                if(titles=='') return
-                titles = titles.replace(/^\n\t+/,"")
-                titles = titles.replace(/\n\t+$/,"")
-                // const para = $(this).
-                const img = $(this).find('.b-synopsis-stack__image').find('img').attr('data-dt-lazy-src')
-                const link = $(this).find('.b-synopsis-stack__title').find('a').attr('href')
-                // link = sourceUrl + link
-                // const dateTime = $(this)
-                specificNews.push({titles,img,link})
-            })
-            $('.b-snippet',html).each(function(){
-                let titles = $(this).find('h3').text()
-                if(titles=='') return
-                titles = titles.replace(/^\n\t+/,"")
-                titles = titles.replace(/\n\t+$/,"")
-                const img = $(this).find('.b-snippet__image').find('img').attr('data-dt-lazy-src')
-                const link = $(this).find('h3').find('a').attr('href')
-                specificNews.push({titles,img,link})
-            })
-            res.json(specificNews)
-        })
-        .catch(err=>console.log(err))
+        connectDTrends()
+        res.json(digitalTrends)
     }
-    //Wired
     else if(sourceId=='wired' && parentId=='news'){
-        const sourceUrl = sources.wired
-        axios(sourceUrl)
-        .then(response=>{
-            const specificNews = []
-            const html = response.data
-            const $ = cheerio.load(html)
-            $('.news-item',html).each(function(){
-                // const titles = $(this).
-                // const para = $(this).
-                // const img = $(this).
-                // let link = $(this).
-                // link = sourceUrl + link
-                // const dateTime = $(this)
-                // specificNews.push({titles,para,img,dateTime,link})
-            })
-            res.json(specificNews)
-        })
-        .catch(err=>console.log(err))
+       connectWired()
+       res.json(wired)
     }
-    //TechCrunch
     else if(sourceId=='techcrunch' && parentId=='news'){
-        const sourceUrl = sources.techcrunch
-        axios(sourceUrl)
-        .then(response=>{
-            const specificNews = []
-            const html = response.data
-            const $ = cheerio.load(html)
-            $('.news-item',html).each(function(){
-                // const titles = $(this).
-                // const para = $(this).
-                // const img = $(this).
-                // let link = $(this).
-                // link = sourceUrl + link
-                // const dateTime = $(this)
-                // specificNews.push({titles,para,img,dateTime,link})
-            })
-            res.json(specificNews)
-        })
-        .catch(err=>console.log(err))
+        connectTCrunch()
+        res.json(techCrunch)
     }
-    //VentureBeat
     else if(sourceId=='venturebeat' && parentId=='news'){
-        const sourceUrl = sources.venturebeat
-        axios(sourceUrl)
-        .then(response=>{
-            const specificNews = []
-            const html = response.data
-            const $ = cheerio.load(html)
-            $('.news-item',html).each(function(){
-                // const titles = $(this).
-                // const para = $(this).
-                // const img = $(this).
-                // let link = $(this).
-                // link = sourceUrl + link
-                // const dateTime = $(this)
-                // specificNews.push({titles,para,img,dateTime,link})
-            })
-            res.json(specificNews)
-        })
-        .catch(err=>console.log(err))
+        connectVBeats()
+        res.json(ventureBeat)
     }
     else{
         res.sendFile(__dirname + "/error404.html")
     }
 })
+function connectTCrunch(){
+    const sourceUrl = sources.techcrunch
+    axios(sourceUrl)
+    .then(response=>{
+        const html = response.data
+        const $ = cheerio.load(html)
+        $('.post-block',html).each(function(){
+            let title = $(this).find('header').find('h2').text()
+            if(title=='') return
+            title = title.replace(/^\n\t+\n\t+/,"")     
+            title = title.replace(/\t+\n\t+$/,"")   
+            const img = $(this).find('footer').find('img').attr('src')
+            const link = $(this).find('header').find('h2').find('a').attr('href')
+            if(link=='') return
+            let dateTime = $(this).find('header').find('time').text()
+            dateTime = dateTime.replace(/^\n\t+/,"")
+            dateTime = dateTime.replace(/\t$/,"")
+            techCrunch.push({title,img,dateTime,link})
+            allNews.push({title,img,link})
+        })
+    })
+    .catch(err=>console.log(err))
+}
+function connectGizmodo(){
+    const sourceUrl = sources.gizmodo + 'tech'
+    axios(sourceUrl)
+    .then(response=>{
+        const html = response.data
+        const $ = cheerio.load(html)
+        $('article',html).each(function(){
+            const title = $(this).find('a').find('h4').text()
+            let img = $(this).find('a').find('img').attr('srcset')
+            if(img==undefined) return
+            img = img.split(',')
+            let arr = []
+            arr.push(img)
+            arr = arr[0].slice(43,50)
+            img = arr.toString()
+            img = img.replace(/^\s/,"")
+            const link = $(this).find('a').attr('href')
+            gizmodo.push({title,img,link})
+            allNews.push({title,img,link})
+        })
+    })
+    .catch(err=>console.log(err))
+}
+function connectVerge(){
+    const sourceUrl = sources.verge + 'tech'
+    axios(sourceUrl)
+    .then(response=>{
+        const html = response.data
+        const $ = cheerio.load(html)
+        $('.c-entry-box--compact--article',html).each(function(){
+            const title = $(this).find('.c-entry-box--compact__title').text()
+            let img = $(this).find('noscript').text()
+            img = img.replace(/^<img\salt=\"\"\ssrc=\"/, "")
+            img = img.replace(/\">$/,"")
+            const link = $(this).find('.c-entry-box--compact__title').find('a').attr('href')
+            const dateTime = $(this).find('time').text().trim()
+            verge.push({title,img,dateTime,link})
+            allNews.push({title,img,link})
+        })
+    })
+    .catch(err=>console.log(err))
+}
+function connectVBeats(){
+    const sourceUrl = sources.venturebeat
+    axios(sourceUrl)
+    .then(response=>{
+        const html = response.data
+        const $ = cheerio.load(html)
+        $('.ArticleListing',html).each(function(){
+            let title = $(this).find('header').find('h2').text()
+            title = title.replace(/^\n\s+\t+/,"")
+            title = title.replace(/\n\s+\t+$/,"")
+            const img = $(this).find('a').find('img').attr('src')
+            const link = $(this).find('a').attr('href')
+            const dateTime = $(this).find('header').find('time').text()
+            ventureBeat.push({title,img,dateTime,link})
+            allNews.push({title,img,link})
+        })
+    })
+    .catch(err=>console.log(err))
+}
+function connectWired(){
+    const sourceUrl = sources.wired + 'category/artificial-intelligence/'
+    axios(sourceUrl)
+    .then(response=>{
+        const html = response.data
+        const $ = cheerio.load(html)
+        $('.summary-item',html).each(function(){
+            const title = $(this).find('.summary-item__content').find('a').find('h2').text()
+            if(title=='') return
+            const para = $(this).find('.summary-item__content').find('p').text()
+            let img = $(this).find('.summary-item__asset-container').find('a').find('span').find('div').find('picture').find('noscript').html()
+            let str = img.indexOf('><img')
+            img = img.slice(str,img.length)
+            str = img.indexOf('src=')
+            img = img.slice(str, img.length)
+            img = img.replace(/^src=\"/,"")
+            img = img.replace(/\"\/>$/,"")
+            let link = $(this).find('.summary-item__content').find('a').attr('href')
+            link = link.replace(/^[/]/,"")
+            link = sources.wired + link
+            wired.push({title,para,img,link})
+            allNews.push({title,img,link})
+        })
+    })
+    .catch(err=>console.log(err))
+}
+function connectDTrends(){
+    const sourceUrl = sources.digitaltrends
+    axios(sourceUrl)
+    .then(response=>{
+        const html = response.data
+        const $ = cheerio.load(html)
+        $('.b-synopsis-stack',html).each(function(){
+            let title = $(this).find('.b-synopsis-stack__title').text()
+            if(title=='') return
+            title = title.replace(/^\n\t+/,"")
+            title = title.replace(/\n\t+$/,"")
+            const img = $(this).find('.b-synopsis-stack__image').find('img').attr('data-dt-lazy-src')
+            const link = $(this).find('.b-synopsis-stack__title').find('a').attr('href')
+            digitalTrends.push({title,img,link})
+            allNews.push({title,img,link})
+        })
+        $('.b-snippet',html).each(function(){
+            let title = $(this).find('h3').text()
+            if(title=='') return
+            title = title.replace(/^\n\t+/,"")
+            title = title.replace(/\n\t+$/,"")
+            const img = $(this).find('.b-snippet__image').find('img').attr('data-dt-lazy-src')
+            const link = $(this).find('h3').find('a').attr('href')
+            digitalTrends.push({title,img,link})
+            allNews.push({title,img,link})
+        })
+    })
+    .catch(err=>console.log(err))
+}
+function connectEngadget(){
+    const sourceUrl = sources.engadget
+    axios(sourceUrl)
+    .then(response=>{
+        const html = response.data
+        const $ = cheerio.load(html)
+        $('li',html).each(function(){
+            const title = $(this).find('article').find('h2').text()
+            if(title=='') return
+            const img = $(this).find('article').find('a').find('img').attr('src')
+            let link = $(this).find('article').find('a').attr('href')
+            link = link.replace(/^[/]/,"")
+            link = sourceUrl + link
+            let dateTime = $(this).find('article').find('a').find('div').find('span:nth-child(2)').text()
+            dateTime = dateTime.replace(/^,\s/,"")
+            engadget.push({title,img,dateTime,link})
+            allNews.push({title,img,link})
+        })
+    })
+    .catch(err=>console.log(err))
+}
+function connectGReview(){
+    const sourceUrl = sources.gadgetreview + 'tech-deals'
+    axios(sourceUrl)
+    .then(response=>{
+        const html = response.data
+        const $ = cheerio.load(html)
+        $('.u-col',html).each(function(){
+            let title = $(this).find('h3').text()
+            title = title.replace(/^\n\t+\n\t+/,"")
+            title = title.replace(/\t+\n\t+$/,"")
+            let img = $(this).find('a').attr('style')
+            if(img==undefined) return
+            img = img.replace(/^background-image:url[(]'/,"")
+            img = img.replace(/'[)];$/,"")
+            const link = $(this).find('a').attr('href')
+            gadgetReview.push({title,img,link})
+            allNews.push({title,img,link})
+        })
+    })
+    .catch(err=>console.log(err))
+}
+function connectTRadar(){
+    const sourceUrl = sources.techradar + 'in/news'
+    axios(sourceUrl)
+    .then(response=>{
+        const html = response.data
+        const $ = cheerio.load(html)
+        $('.small',html).each(function(){
+            const title = $(this).find('a').find('article').find('.content').find('h3').text().trim()
+            if(title=='') return
+            const img = $(this).find('a').find('article').find('.image').find('img').attr('data-original-mos')
+            const link = $(this).find('a').attr('href')
+            const dateTime = $(this).find('a').find('article').find('.content').find('p').find('time').text()
+            techrRadar.push({title,img,dateTime,link})
+            allNews.push({title,img,link})
+        })
+    })
+    .catch(err=>console.log(err))
+}
+function connect9to5Mac(){
+    const sourceUrl = sources.nineto5mac
+    axios(sourceUrl)
+    .then(response=>{
+        const html = response.data
+        const $ = cheerio.load(html)
+        $('article',html).each(function(){
+            const title = $(this).find('.post-title').text()
+            if(title=='') return
+            const img = $(this).find('a').find('img').attr('src')
+            const link = $(this).find('a').attr('href')
+            let dateTime = $(this).find('.post-meta').find('.time-twitter').text()
+            dateTime = dateTime.replace(/^\n\t+-\s/,"")
+            dateTime = dateTime.replace(/\n\t+$/,"")
+            nineto5Mac.push({title,img,dateTime,link})
+            allNews.push({title,img,link})
+        })
+    })
+    .catch(err=>console.log(err))
+}
+function connectAA(){
+    const sourceUrl = sources.androidauthority + 'news'
+    axios(sourceUrl)
+    .then(response=>{
+        const html = response.data
+        const $ = cheerio.load(html)
+        $('a',html).each(function(){
+            let title = $(this).find('.title-wrapper').text()
+            title += $(this).find('.title').text()
+            if(title=='') return
+            const img = $(this).find('img').attr('src')
+            let link = $(this).attr('href')
+            link = sourceUrl + link
+            androidAuthority.push({title,img,link})
+            allNews.push({title,img,link})
+        })
+    })
+    .catch(err=>console.log(err))
+}
+function connectGSMA(){
+    const sourceUrl = sources.gsmarena
+    axios(sourceUrl)
+    .then(response=>{
+        const html = response.data
+        const $ = cheerio.load(html)
+        $('.news-item',html).each(function(){
+            const title = $(this).find('a').find('h3').text()
+            const para = $(this).find('a').find('p').text()
+            const img = $(this).find('a').find('.news-item-media-wrap').find('img').attr('src')
+            let link = $(this).find('a').attr('href')
+            link = sourceUrl + link
+            const dateTime = $(this).find('.meta-line').find('.meta-item-time').text()
+            gsmarena.push({title,para,img,dateTime,link})
+            allNews.push({title,img,link})
+        })
+    })
+    .catch(err=>console.log(err))
+}
 
 app.listen(port, ()=>console.log(`server listening on port ${port}`))
