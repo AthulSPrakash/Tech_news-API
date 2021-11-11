@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="API for tech news from top tech websites">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&family=Roboto+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+    <title>Tech News API</title>
+</head>
+<body>
+    <div class="container">
+        <h1 class="size">Welcome To<br> Tech News API</h1>
+        <h2 class="para-size">Where you can get latest news from top tech Websites in the world</h2>
+        <button title="show sample" class="sample" onclick="openSample()">Sample</button>
+        <div class="overlay">
+            <p aria-label="sample api response in json">
+<span class="color-alt">[</span><br>
+&nbsp;<span class="color-alt">{</span><br>
+"titles"<span class="color">: "Twitter Blue brings undo tweet, custom navigation, bookmarks folders, and more for a monthly fee",</span><br>
+"para"<span class="color">: "Available only in two countries for now.",</span><br>
+"img"<span class="color">: "https://fdn.gsmarena.com/imgroot/news/21/11/twitter-blue/-344x215/gsmarena_000.jpg",</span><br>
+"dateTime"<span class="color">: "42 minutes ago",</span><br>
+"link"<span class="color">: "https://www.gsmarena.com/twitter_blue_brings_undo_tweet_custom_navigation_bookmarks_folders_and_more_for_a_monthly_fee-news-51786.php"</span><br>
+&nbsp;<span class="color-alt">},</span><br>
+&nbsp;<span class="color-alt">{</span><br>
+"titles"<span class="color">: "EU General Court upholds Google’s appeal over €2.4 billion antitrust fine from 2017",</span><br>
+"para"<span class="color">: "Google's last resort is to appeal before the European Court of Justice.",</span><br>
+"img"<span class="color">: "https://fdn.gsmarena.com/imgroot/news/21/11/eu-upholds-google-fine-appeal/-344x215/gsmarena_00.jpg",</span><br>
+"dateTime"<span class="color">: "3 hours ago",</span><br>
+"link"<span class="color">: "https://www.gsmarena.com/eu_general_court_upholds_googles_appeal_over_24_billion_antitrust_fine_from_2017-news-51784.php"</span><br>
+&nbsp;<span class="color-alt">},</span><br>
+&nbsp;<span class="color-alt">{</span><br>
+"titles"<span class="color">: "Samsung: no new Exynos chipset on November 19",</span><br>
+"para"<span class="color">: "Instead, the big reveal will be related to changes in the social network accounts for Samsung's semiconductor division.",</span><br>
+"img"<span class="color">: "https://fdn.gsmarena.com/imgroot/news/21/11/samsung-no-new-chipset-november-19/-344x215/gsmarena_000.jpg",</span><br>
+"dateTime"<span class="color">: "4 hours ago",</span><br>
+"link"<span class="color">: "https://www.gsmarena.com/samsung_no_new_exynos_chipset_on_november_19-news-51783.php"</span><br>
+&nbsp;<span class="color-alt">}</span><br>
+<span class="color-alt">]</span>
+            </p>
+        </div>
+    </div>
+    <div class="container-two">
+        <div class="source-box">
+            <a class="link" href="https://techcrunch.com/"><img alt="TechCrunch" src="/assets/tech.png" class="source"/></a>
+            <a class="link" href="https://gizmodo.com/"><img alt="Gizmodo" src="/assets/gizmodo.png" class="source"/></a>
+            <a class="link" href="https://www.theverge.com/"><img alt="The Verge" src="/assets/verge.png" class="source"/></a>
+            <a class="link" href="https://venturebeat.com/"><img alt="VentureBeat" src="/assets/venture.png" class="source"/></a>
+            <a class="link" href="https://www.wired.com/"><img alt="Wired" src="/assets/wired.png" class="source"/></a>
+            <a class="link" href="https://www.digitaltrends.com/"><img alt="digitaltrends" src="/assets/digital.png" class="source"/></a>
+            <a class="link" href="https://www.engadget.com/"><img alt="engadget" src="/assets/engadget.png" class="source"/></a>
+            <a class="link" href="https://www.androidauthority.com/"><img alt="Android Authority" src="/assets/android.png" class="source"/></a>
+            <a class="link" href="https://www.gadgetreview.com/"><img alt="GadgetReview" src="/assets/gadget.png" class="source"/></a>
+            <a class="link" href="https://www.techradar.com/"><img alt="techradar" src="/assets/radar.png" class="source"/></a>
+            <a class="link" href="https://9to5mac.com/"><img alt="9to5Mac" src="/assets/9to5mac.png" class="source"/></a>
+            <a class="link" href="https://www.gsmarena.com/"><img alt="GSMArena" src="/assets/gsm.png" class="source"/></a>
+        </div>
+    </div>
+</body>
+<script>
+    function openSample(){
+        const overlay = document.querySelector('.overlay')
+        overlay.classList.toggle('toggle')
+    }
+</script>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@900&display=swap" rel="stylesheet">
+    <style>
+    *{
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+        font-family: 'Roboto', sans-serif;
+        color: #404040;
+        letter-spacing: 0.05em;
+    }
+    body{
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background: #f8f8ff;
+        overflow: hidden;
+        gap: 2em;
+    }
+    .background{
+        position: absolute;
+        width: 100vw;
+        height: 100vh;
+        background: url('/assets/bg.png');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
+        left: 0;
+        top: 0;
+        z-index: 2;
+    }
+    .text-container{
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    .error-text{
+        font-size: 5em;
+        text-align: center;
+        width: 100%;
+        z-index: 2;
+    }
+    .error-code{
+        font-size: 10em;
+        background: -webkit-linear-gradient(crimson,#0039a6);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        z-index: -1;
+    }
+    .btn-container{
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 2.5em;
+        z-index: 2;
+    }
+    .home,.report{
+        border: none;
+        outline: none;
+        text-decoration: none;
+        padding: 0.75em 1.5em;
+        border-radius: 2em;
+        background: #f8f8ff;
+        border: 3px solid grey;
+        transition: 0.2s;
+        color: grey;
+    }
+    .home:hover,.report:hover{
+        transition: 0.2s;
+        border: 3px solid hotpink;
+        background: hotpink;
+        color: #f8f8ff;
+    }
+    .msg{
+        z-index: 2;
+    }
+    @media screen and (max-width:450px){
+        .error-text{
+            font-size: 4em;
+        }
+        .error-code{
+            font-size: 8em;
+        }
+        .msg{
+            font-size: 0.8em;
+        }
+        .home,.report{
+            padding: 0.75em 1.25em;
+        }
+    }
+    @media screen and (max-width:335px){
+        .error-text{
+            font-size: 3em;
+        }
+        .error-code{
+            font-size: 6em;
+        }
+        .msg{
+            font-size: 0.65em;
+        }
+        .home,.report{
+            padding: 0.5em 1em;
+        }
+    }
+    </style>
+</head>
+<body>
+    <div class="background"></div>
+    <div class="text-container">
+        <h1 class="error-text">Oops!</h1><br><h1 class="error-code">404</h1>
+    </div>
+    <p class="msg">Sorry the page your looking for doesn't exist,<br> if you think anything is broken please report.</p>
+    <div class="btn-container">
+        <a href="http://localhost:5000" target="_self" class="home">Home</a>
+        <a href="mailto:athulsprakash@gmail.com?subject=Tech news API Bug Report" class="report">Report</a>
+    </div>
+</body>
+<script>
+
+</script>
+</html>
