@@ -63,7 +63,7 @@ app.get("/:news/:sourceId", async (req,res)=>{
     }
     //AndroidAuthority
     else if(sourceId=='androidauthority' && parentId=='news'){
-        const sourceUrl = sources.androidauthority+'news'
+        const sourceUrl = sources.androidauthority + 'news'
         axios(sourceUrl)
         .then(response=>{
             const specificNews = []
@@ -79,13 +79,12 @@ app.get("/:news/:sourceId", async (req,res)=>{
                 specificNews.push({titles,img,link})
             })
             res.json(specificNews)
-            console.log(specificNews)
         })
         .catch(err=>console.log(err))
     }
     //The Verge
     else if(sourceId=='verge' && parentId=='news'){
-        const sourceUrl = sources.verge+'tech'
+        const sourceUrl = sources.verge + 'tech'
         axios(sourceUrl)
         .then(response=>{
             const specificNews = []
@@ -98,7 +97,7 @@ app.get("/:news/:sourceId", async (req,res)=>{
                 img = img.replace(/\">$/,"")
                 const link = $(this).find('.c-entry-box--compact__title').find('a').attr('href')
                 const dateTime = $(this).find('time').text().trim()
-                specificNews.push({titles,img,link,dateTime})
+                specificNews.push({titles,img,dateTime,link})
             })
             res.json(specificNews)
         })
@@ -106,20 +105,18 @@ app.get("/:news/:sourceId", async (req,res)=>{
     }
     //Gizmodo
     else if(sourceId=='gizmodo' && parentId=='news'){
-        const sourceUrl = sources.gizmodo
+        const sourceUrl = sources.gizmodo + 'tech/news'
         axios(sourceUrl)
         .then(response=>{
             const specificNews = []
             const html = response.data
             const $ = cheerio.load(html)
-            $('.news-item',html).each(function(){
-                // const titles = $(this).
-                // const para = $(this).
-                // const img = $(this).
-                // let link = $(this).
-                // link = sourceUrl + link
-                // const dateTime = $(this)
-                // specificNews.push({titles,para,img,dateTime,link})
+            $('article',html).each(function(){
+                const titles = $(this).find('h2').text()
+                const img = $(this).find('figure').find('a').find('img').attr('src')
+                const link = $(this).find('figure').find('a').attr('href')
+                const dateTime = $(this).find('time').find('a').text()
+                specificNews.push({titles,img,dateTime,link})
             })
             res.json(specificNews)
         })
@@ -127,20 +124,20 @@ app.get("/:news/:sourceId", async (req,res)=>{
     }
     //techradar
     else if(sourceId=='techradar' && parentId=='news'){
-        const sourceUrl = sources.techradar
+        const sourceUrl = sources.techradar + 'in/news'
         axios(sourceUrl)
         .then(response=>{
             const specificNews = []
             const html = response.data
             const $ = cheerio.load(html)
-            $('.news-item',html).each(function(){
-                // const titles = $(this).
+            $('.small',html).each(function(){
+                const titles = $(this).find('a').find('article').find('.content').find('h3').text().trim()
+                if(titles=='') return
                 // const para = $(this).
-                // const img = $(this).
-                // let link = $(this).
-                // link = sourceUrl + link
-                // const dateTime = $(this)
-                // specificNews.push({titles,para,img,dateTime,link})
+                const img = $(this).find('a').find('article').find('.image').find('img').attr('data-original-mos')
+                const link = $(this).find('a').attr('href')
+                const dateTime = $(this).find('a').find('article').find('.content').find('p').find('time').text()
+                specificNews.push({titles,img,dateTime,link})
             })
             res.json(specificNews)
         })
@@ -154,14 +151,17 @@ app.get("/:news/:sourceId", async (req,res)=>{
             const specificNews = []
             const html = response.data
             const $ = cheerio.load(html)
-            $('.news-item',html).each(function(){
-                // const titles = $(this).
+            $('li',html).each(function(){
+                const titles = $(this).find('article').find('h2').text()
+                if(titles=='') return
                 // const para = $(this).
-                // const img = $(this).
-                // let link = $(this).
-                // link = sourceUrl + link
-                // const dateTime = $(this)
-                // specificNews.push({titles,para,img,dateTime,link})
+                const img = $(this).find('article').find('a').find('img').attr('src')
+                let link = $(this).find('article').find('a').attr('href')
+                link = link.replace(/^[/]/,"")
+                link = sourceUrl + link
+                let dateTime = $(this).find('article').find('a').find('div').find('span:nth-child(2)').text()
+                dateTime = dateTime.replace(/^,\s/,"")
+                specificNews.push({titles,img,dateTime,link})
             })
             res.json(specificNews)
         })
@@ -175,14 +175,15 @@ app.get("/:news/:sourceId", async (req,res)=>{
             const specificNews = []
             const html = response.data
             const $ = cheerio.load(html)
-            $('.news-item',html).each(function(){
-                // const titles = $(this).
-                // const para = $(this).
-                // const img = $(this).
-                // let link = $(this).
-                // link = sourceUrl + link
-                // const dateTime = $(this)
-                // specificNews.push({titles,para,img,dateTime,link})
+            $('article',html).each(function(){
+                const titles = $(this).find('.post-title').text()
+                if(titles=='') return
+                const img = $(this).find('a').find('img').attr('src')
+                const link = $(this).find('a').attr('href')
+                let dateTime = $(this).find('.post-meta').find('.time-twitter').text()
+                dateTime = dateTime.replace(/^\n\t+-\s/,"")
+                dateTime = dateTime.replace(/\n\t+$/,"")
+                specificNews.push({titles,img,dateTime,link})
             })
             res.json(specificNews)
         })
@@ -190,20 +191,22 @@ app.get("/:news/:sourceId", async (req,res)=>{
     }
     //GadgetReview
     else if(sourceId=='gadgetreview' && parentId=='news'){
-        const sourceUrl = sources.gadgetreview
+        const sourceUrl = sources.gadgetreview + 'tech-deals'
         axios(sourceUrl)
         .then(response=>{
             const specificNews = []
             const html = response.data
             const $ = cheerio.load(html)
-            $('.news-item',html).each(function(){
-                // const titles = $(this).
-                // const para = $(this).
-                // const img = $(this).
-                // let link = $(this).
-                // link = sourceUrl + link
-                // const dateTime = $(this)
-                // specificNews.push({titles,para,img,dateTime,link})
+            $('.u-col',html).each(function(){
+                let titles = $(this).find('h3').text()
+                titles = titles.replace(/^\n\t+\n\t+/,"")
+                titles = titles.replace(/\t+\n\t+$/,"")
+                let img = $(this).find('a').attr('style')
+                if(img==undefined) return
+                img = img.replace(/^background-image:url[(]'/,"")
+                img = img.replace(/'[)];$/,"")
+                const link = $(this).find('a').attr('href')
+                specificNews.push({titles,img,link})
             })
             res.json(specificNews)
         })
@@ -217,14 +220,26 @@ app.get("/:news/:sourceId", async (req,res)=>{
             const specificNews = []
             const html = response.data
             const $ = cheerio.load(html)
-            $('.news-item',html).each(function(){
-                // const titles = $(this).
+            $('.b-synopsis-stack',html).each(function(){
+                let titles = $(this).find('.b-synopsis-stack__title').text()
+                if(titles=='') return
+                titles = titles.replace(/^\n\t+/,"")
+                titles = titles.replace(/\n\t+$/,"")
                 // const para = $(this).
-                // const img = $(this).
-                // let link = $(this).
+                const img = $(this).find('.b-synopsis-stack__image').find('img').attr('data-dt-lazy-src')
+                const link = $(this).find('.b-synopsis-stack__title').find('a').attr('href')
                 // link = sourceUrl + link
                 // const dateTime = $(this)
-                // specificNews.push({titles,para,img,dateTime,link})
+                specificNews.push({titles,img,link})
+            })
+            $('.b-snippet',html).each(function(){
+                let titles = $(this).find('h3').text()
+                if(titles=='') return
+                titles = titles.replace(/^\n\t+/,"")
+                titles = titles.replace(/\n\t+$/,"")
+                const img = $(this).find('.b-snippet__image').find('img').attr('data-dt-lazy-src')
+                const link = $(this).find('h3').find('a').attr('href')
+                specificNews.push({titles,img,link})
             })
             res.json(specificNews)
         })
