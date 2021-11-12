@@ -36,19 +36,13 @@ const gsmarena = []
 
 app.use(express.static(__dirname));
 
-app.get("/:api", (req,res)=>{
-    const api = req.params.api
-    if(api=='api'){
-        res.sendFile(__dirname + "/index.html")
-    }else{
-        res.sendFile(__dirname + "/error404.html")
-    }
+app.get("/", (req,res)=>{
+    res.sendFile(__dirname + "/error404.html")
 })
 
-app.get("/:api/:allnews", (req,res)=>{
+app.get("/:allnews", (req,res)=>{
     const allSource = req.params.allnews
-    const api = req.params.api
-    if(allSource=='allnews' && api=='api'){
+    if(allSource=='allnews'){
         connectTCrunch()
         connectGizmodo()    
         connectVerge()         
@@ -68,57 +62,55 @@ app.get("/:api/:allnews", (req,res)=>{
     }
 })
 
-app.get("/:api/:news/:sourceId", async (req,res)=>{
+app.get("/news/:sourceId", async (req,res)=>{
 
-    const parentId = req.params.news
     const sourceId = req.params.sourceId
-    const api = req.params.api
 
-    if(sourceId=='gsmarena' && parentId=='news' && api=='api'){
+    if(sourceId=='gsmarena'){
         connectGSMA()
         res.json(gsmarena)
     }
-    else if(sourceId=='androidauthority' && parentId=='news' && api=='api'){
+    else if(sourceId=='androidauthority'){
         connectAA()
         res.json(androidAuthority)
     }
-    else if(sourceId=='verge' && parentId=='news' && api=='api'){
+    else if(sourceId=='verge'){
         connectVerge()
         res.json(verge)
     }
-    else if(sourceId=='gizmodo' && parentId=='news' && api=='api'){
+    else if(sourceId=='gizmodo'){
         connectGizmodo()
         res.json(gizmodo)
     }
-    else if(sourceId=='techradar' && parentId=='news' && api=='api'){
+    else if(sourceId=='techradar'){
         connectTRadar()
         res.json(techrRadar)
     }
-    else if(sourceId=='engadget' && parentId=='news' && api=='api'){
+    else if(sourceId=='engadget'){
         connectEngadget()
         res.json(engadget)
     }
-    else if(sourceId=='nineto5mac' && parentId=='news' && api=='api'){
+    else if(sourceId=='nineto5mac'){
         connect9to5Mac()
         res.json(nineto5Mac)
     }
-    else if(sourceId=='gadgetreview' && parentId=='news' && api=='api'){
+    else if(sourceId=='gadgetreview'){
         connectGReview()
         res.json(gadgetReview)
     }
-    else if(sourceId=='digitaltrends' && parentId=='news' && api=='api'){
+    else if(sourceId=='digitaltrends'){
         connectDTrends()
         res.json(digitalTrends)
     }
-    else if(sourceId=='wired' && parentId=='news' && api=='api'){
+    else if(sourceId=='wired'){
        connectWired()
        res.json(wired)
     }
-    else if(sourceId=='techcrunch' && parentId=='news' && api=='api'){
+    else if(sourceId=='techcrunch'){
         connectTCrunch()
         res.json(techCrunch)
     }
-    else if(sourceId=='venturebeat' && parentId=='news' && api=='api'){
+    else if(sourceId=='venturebeat'){
         connectVBeat()
         res.json(ventureBeat)
     }
