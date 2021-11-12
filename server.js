@@ -1,7 +1,15 @@
 const express = require('express')
 const axios = require('axios')
 const cheerio = require('cheerio')
+const cors = require('cors')
 const app = express()
+const corsOption = {
+    origin: '*',
+    credentials: true,
+    optionSuccessStatus: 200,
+}
+app.use(cors(corsOption))
+app.use(express.static(__dirname));
 
 const port = process.env.PORT || 5000
 
@@ -33,8 +41,6 @@ const techrRadar = []
 const nineto5Mac = []
 const androidAuthority = []
 const gsmarena = []
-
-app.use(express.static(__dirname));
 
 app.get("/", (req,res)=>{
     res.sendFile(__dirname + "/error404.html")
