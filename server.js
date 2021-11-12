@@ -36,17 +36,23 @@ const gsmarena = []
 
 app.use(express.static(__dirname));
 
-app.get("/", (req,res)=>{
-    res.sendFile(__dirname + "/index.html");
+app.get("/:api", (req,res)=>{
+    const api = req.params.api
+    if(api=='api'){
+        res.sendFile(__dirname + "/index.html")
+    }else{
+        res.sendFile(__dirname + "/error404.html")
+    }
 })
 
-app.get("/:allnews", (req,res)=>{
+app.get("/:api/:allnews", (req,res)=>{
     const allSource = req.params.allnews
-    if(allSource=='allnews'){
+    const api = req.params.api
+    if(allSource=='allnews' && api=='api'){
         connectTCrunch()
         connectGizmodo()    
         connectVerge()         
-        connectVBeats()  
+        connectVBeat()  
         connectWired()  
         connectDTrends()     
         connectEngadget()       
@@ -62,57 +68,58 @@ app.get("/:allnews", (req,res)=>{
     }
 })
 
-app.get("/:news/:sourceId", async (req,res)=>{
+app.get("/:api/:news/:sourceId", async (req,res)=>{
 
     const parentId = req.params.news
     const sourceId = req.params.sourceId
+    const api = req.params.api
 
-    if(sourceId=='gsmarena' && parentId=='news'){
+    if(sourceId=='gsmarena' && parentId=='news' && api=='api'){
         connectGSMA()
         res.json(gsmarena)
     }
-    else if(sourceId=='androidauthority' && parentId=='news'){
+    else if(sourceId=='androidauthority' && parentId=='news' && api=='api'){
         connectAA()
         res.json(androidAuthority)
     }
-    else if(sourceId=='verge' && parentId=='news'){
+    else if(sourceId=='verge' && parentId=='news' && api=='api'){
         connectVerge()
         res.json(verge)
     }
-    else if(sourceId=='gizmodo' && parentId=='news'){
+    else if(sourceId=='gizmodo' && parentId=='news' && api=='api'){
         connectGizmodo()
         res.json(gizmodo)
     }
-    else if(sourceId=='techradar' && parentId=='news'){
+    else if(sourceId=='techradar' && parentId=='news' && api=='api'){
         connectTRadar()
         res.json(techrRadar)
     }
-    else if(sourceId=='engadget' && parentId=='news'){
+    else if(sourceId=='engadget' && parentId=='news' && api=='api'){
         connectEngadget()
         res.json(engadget)
     }
-    else if(sourceId=='nineto5mac' && parentId=='news'){
+    else if(sourceId=='nineto5mac' && parentId=='news' && api=='api'){
         connect9to5Mac()
         res.json(nineto5Mac)
     }
-    else if(sourceId=='gadgetreview' && parentId=='news'){
+    else if(sourceId=='gadgetreview' && parentId=='news' && api=='api'){
         connectGReview()
         res.json(gadgetReview)
     }
-    else if(sourceId=='digitaltrends' && parentId=='news'){
+    else if(sourceId=='digitaltrends' && parentId=='news' && api=='api'){
         connectDTrends()
         res.json(digitalTrends)
     }
-    else if(sourceId=='wired' && parentId=='news'){
+    else if(sourceId=='wired' && parentId=='news' && api=='api'){
        connectWired()
        res.json(wired)
     }
-    else if(sourceId=='techcrunch' && parentId=='news'){
+    else if(sourceId=='techcrunch' && parentId=='news' && api=='api'){
         connectTCrunch()
         res.json(techCrunch)
     }
-    else if(sourceId=='venturebeat' && parentId=='news'){
-        connectVBeats()
+    else if(sourceId=='venturebeat' && parentId=='news' && api=='api'){
+        connectVBeat()
         res.json(ventureBeat)
     }
     else{
@@ -120,6 +127,7 @@ app.get("/:news/:sourceId", async (req,res)=>{
     }
 })
 function connectTCrunch(){
+    const sourceName = 'TechCrunch'
     const sourceUrl = sources.techcrunch
     axios(sourceUrl)
     .then(response=>{
@@ -137,12 +145,13 @@ function connectTCrunch(){
             dateTime = dateTime.replace(/^\n\t+/,"")
             dateTime = dateTime.replace(/\t$/,"")
             techCrunch.push({title,img,dateTime,link})
-            allNews.push({title,img,link})
+            allNews.push({title,img,link,sourceName})
         })
     })
     .catch(err=>console.log(err))
 }
 function connectGizmodo(){
+    const sourceName = 'Gizmodo'
     const sourceUrl = sources.gizmodo + 'tech'
     axios(sourceUrl)
     .then(response=>{
@@ -160,12 +169,13 @@ function connectGizmodo(){
             img = img.replace(/^\s/,"")
             const link = $(this).find('a').attr('href')
             gizmodo.push({title,img,link})
-            allNews.push({title,img,link})
+            allNews.push({title,img,link,sourceName})
         })
     })
     .catch(err=>console.log(err))
 }
 function connectVerge(){
+    const sourceName = 'The Verge'
     const sourceUrl = sources.verge + 'tech'
     axios(sourceUrl)
     .then(response=>{
@@ -179,12 +189,13 @@ function connectVerge(){
             const link = $(this).find('.c-entry-box--compact__title').find('a').attr('href')
             const dateTime = $(this).find('time').text().trim()
             verge.push({title,img,dateTime,link})
-            allNews.push({title,img,link})
+            allNews.push({title,img,link,sourceName})
         })
     })
     .catch(err=>console.log(err))
 }
-function connectVBeats(){
+function connectVBeat(){
+    const sourceName = 'VentureBeat'
     const sourceUrl = sources.venturebeat
     axios(sourceUrl)
     .then(response=>{
@@ -198,12 +209,13 @@ function connectVBeats(){
             const link = $(this).find('a').attr('href')
             const dateTime = $(this).find('header').find('time').text()
             ventureBeat.push({title,img,dateTime,link})
-            allNews.push({title,img,link})
+            allNews.push({title,img,link,sourceName})
         })
     })
     .catch(err=>console.log(err))
 }
 function connectWired(){
+    const sourceName = 'Wired'
     const sourceUrl = sources.wired + 'category/artificial-intelligence/'
     axios(sourceUrl)
     .then(response=>{
@@ -224,12 +236,13 @@ function connectWired(){
             link = link.replace(/^[/]/,"")
             link = sources.wired + link
             wired.push({title,para,img,link})
-            allNews.push({title,img,link})
+            allNews.push({title,img,link,sourceName})
         })
     })
     .catch(err=>console.log(err))
 }
 function connectDTrends(){
+    const sourceName = 'DigitalTrends'
     const sourceUrl = sources.digitaltrends
     axios(sourceUrl)
     .then(response=>{
@@ -243,7 +256,7 @@ function connectDTrends(){
             const img = $(this).find('.b-synopsis-stack__image').find('img').attr('data-dt-lazy-src')
             const link = $(this).find('.b-synopsis-stack__title').find('a').attr('href')
             digitalTrends.push({title,img,link})
-            allNews.push({title,img,link})
+            allNews.push({title,img,link,sourceName})
         })
         $('.b-snippet',html).each(function(){
             let title = $(this).find('h3').text()
@@ -253,12 +266,13 @@ function connectDTrends(){
             const img = $(this).find('.b-snippet__image').find('img').attr('data-dt-lazy-src')
             const link = $(this).find('h3').find('a').attr('href')
             digitalTrends.push({title,img,link})
-            allNews.push({title,img,link})
+            allNews.push({title,img,link,sourceName})
         })
     })
     .catch(err=>console.log(err))
 }
 function connectEngadget(){
+    const sourceName = 'engadget'
     const sourceUrl = sources.engadget
     axios(sourceUrl)
     .then(response=>{
@@ -274,12 +288,13 @@ function connectEngadget(){
             let dateTime = $(this).find('article').find('a').find('div').find('span:nth-child(2)').text()
             dateTime = dateTime.replace(/^,\s/,"")
             engadget.push({title,img,dateTime,link})
-            allNews.push({title,img,link})
+            allNews.push({title,img,link,sourceName})
         })
     })
     .catch(err=>console.log(err))
 }
 function connectGReview(){
+    const sourceName = 'GadgetReview'
     const sourceUrl = sources.gadgetreview + 'tech-deals'
     axios(sourceUrl)
     .then(response=>{
@@ -295,12 +310,13 @@ function connectGReview(){
             img = img.replace(/'[)];$/,"")
             const link = $(this).find('a').attr('href')
             gadgetReview.push({title,img,link})
-            allNews.push({title,img,link})
+            allNews.push({title,img,link,sourceName})
         })
     })
     .catch(err=>console.log(err))
 }
 function connectTRadar(){
+    const sourceName = 'TechRadar'
     const sourceUrl = sources.techradar + 'in/news'
     axios(sourceUrl)
     .then(response=>{
@@ -313,12 +329,13 @@ function connectTRadar(){
             const link = $(this).find('a').attr('href')
             const dateTime = $(this).find('a').find('article').find('.content').find('p').find('time').text()
             techrRadar.push({title,img,dateTime,link})
-            allNews.push({title,img,link})
+            allNews.push({title,img,link,sourceName})
         })
     })
     .catch(err=>console.log(err))
 }
 function connect9to5Mac(){
+    const sourceName = '9to5Mac'
     const sourceUrl = sources.nineto5mac
     axios(sourceUrl)
     .then(response=>{
@@ -333,12 +350,13 @@ function connect9to5Mac(){
             dateTime = dateTime.replace(/^\n\t+-\s/,"")
             dateTime = dateTime.replace(/\n\t+$/,"")
             nineto5Mac.push({title,img,dateTime,link})
-            allNews.push({title,img,link})
+            allNews.push({title,img,link,sourceName})
         })
     })
     .catch(err=>console.log(err))
 }
 function connectAA(){
+    const sourceName = 'Android Authority'
     const sourceUrl = sources.androidauthority + 'news'
     axios(sourceUrl)
     .then(response=>{
@@ -352,12 +370,13 @@ function connectAA(){
             let link = $(this).attr('href')
             link = sourceUrl + link
             androidAuthority.push({title,img,link})
-            allNews.push({title,img,link})
+            allNews.push({title,img,link,sourceName})
         })
     })
     .catch(err=>console.log(err))
 }
 function connectGSMA(){
+    const sourceName = 'GSMArena'
     const sourceUrl = sources.gsmarena
     axios(sourceUrl)
     .then(response=>{
@@ -371,7 +390,7 @@ function connectGSMA(){
             link = sourceUrl + link
             const dateTime = $(this).find('.meta-line').find('.meta-item-time').text()
             gsmarena.push({title,para,img,dateTime,link})
-            allNews.push({title,img,link})
+            allNews.push({title,img,link,sourceName})
         })
     })
     .catch(err=>console.log(err))
