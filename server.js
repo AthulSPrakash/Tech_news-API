@@ -58,15 +58,22 @@ app.get("/:sourceId", async (req,res)=>{
     }
 
     else if(sourceId=='androidauthority'){
-        const sourceUrl = sources.androidauthority + 'news'
+        const sourceUrl = sources.androidauthority
         const androidAuthority = []
         axios(sourceUrl)
         .then(response=>{
             const html = response.data
             const $ = cheerio.load(html)
             $('a',html).each(function(){
-                let title = $(this).find('.title-wrapper').text()
-                title += $(this).find('.title').text()
+                const title = $(this).find('.te').text()
+                if(title=='') return
+                const img = $(this).find('img').attr('src')
+                let link = $(this).attr('href')
+                link = sourceUrl + link
+                androidAuthority.push({title,img,link})
+            })
+            $('a',html).each(function(){
+                const title = $(this).find('.wi').text()
                 if(title=='') return
                 const img = $(this).find('img').attr('src')
                 let link = $(this).attr('href')
