@@ -95,8 +95,9 @@ app.get("/:sourceId", async (req,res)=>{
             $('.c-entry-box--compact--article',html).each(function(){
                 const title = $(this).find('.c-entry-box--compact__title').text()
                 let img = $(this).find('noscript').text()
-                img = img.replace(/^<img\salt=\"\"\ssrc=\"/, "")
-                img = img.replace(/\">$/,"")
+                img = img.replace(/^<img\salt=\"/ig, "")
+                img = img.replace(/\">$/ig,"")
+                img = img.replace(/^[a-z|'|?|"|\s|0-9|\"|.|,]*src=\"/ig,"")
                 const link = $(this).find('.c-entry-box--compact__title').find('a').attr('href')
                 const dateTime = $(this).find('time').text().trim()
                 verge.push({title,img,dateTime,link})
